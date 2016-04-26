@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Register Form</title>
+	<script type="text/javascript" src="./jquery-2.1.4.min.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				//验证表单操作
+				$("#validate").click(function(){
+					//置空错误显示区域
+					$("#msg").html("");
+					//获取表单各值
+					var user = $("#user").val();
+					var email = $("#email").val();
+					var pwd = $("#pwd").val();
+					var rePwd = $("#rePwd").val();
+					//判断有无空值
+					var flag = user && email && pwd && rePwd;
+					//若有空值
+					if(!flag){
+						$("#msg").append("All fileds are required!").css("color", "red");
+						return false;//一定要返回false？
+					}
+					//判断密码
+					var pwdMatch = false;
+					if(pwd === rePwd){
+						pwdMatch =true;
+					}
+					if(!pwdMatch){
+						$("#msg").append("<p>Password don't match!</p>").css("color", "red");
+						return false;
+					}
+	 			});
+				//增加所在州下拉列表操作
+				$("#location").click(function(){
+					$("body").append("<select id = 'state'><option>" + "Select State</option></select>");//""使用？
+					//禁用Add Location按钮，避免重复点击造成添加重复的下拉列表框
+					$(this).attr("disabled", "disabled");
+					//添加州名
+					var states = ['California', 'Florida', 'New York'];
+					$.each(states, function(index, value){
+						$("#state").append("<option value = '" + index + "'>" + value + "</option>");
+					});
+					//添加空的城市下拉列表框
+					$("body").append("<select id='city'>" + "<option>Select City</option></select>");
+				});
+				//增加州所在城市下拉列表操作
+				$("#state").on("change", function(event){
+					//获取选中州名称
+					var selectState = $(this).val();
+					console.log(selectState);
+					//定义城市数组
+					var CA_Cities = ["San Francisco", "Los Angeles", "Mountain View"];
+					var FL_Cities = ["Fort Lauderdale", "Miami", "Orlando"];
+					var NY_Cities = ["New York", "Buffalo", "Ithica"];
+					var cities = [];
+					//判断所选州
+					if(selectState == 0){
+						cities = $.extend([], CA_Cities);
+					}else if(selectState == 1){
+						cities = $.extend([], FL_Cities);
+					}else if(selectState == 2){
+						cities = $.extend([], NY_Cities);
+					}
+					$("#city").empty();
+					$.each(cities, function(index, value){
+						$("#city").append("<option value = '" + index + "'>" + value + "</option>");
+					});
+				});
+			});
+		</script>
+</head>
+<body>
+	<div id="msg"></div>
+	<form id="regform">
+		<label for="">User</label>
+		<input type="text" id="user" name="user" /><br/>
+		<label for="">Email</label>
+		<input type="text" id="email" name="email" /><br/>
+		<label for="">Password</label>
+		<input type="password" id="pwd" name="pwd" /><br/>
+		<label for="re-pwd">Re-enter Password</label>
+		<input type="password" id="rePwd" name="re-pwd" /><br/>
+		<input type="button" id="validate" value="validate Inputs" />
+	</form>
+	<input type="button" id="location" value="Add Location" />
+</body>
+</html>
