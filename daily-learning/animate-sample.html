@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>animote03</title>
+	<script type="text/javascript" src="./jquery-2.1.4.min.js"></script>
+	<style type="text/css">
+		body{
+			background-color: #000;
+		}
+		h1{
+			color: red;
+			font-size: xx-large;
+		}
+		#spaceShip{
+			/*定位一定要absolute?*/
+			position: absolute;
+			left: 0;
+			top: 80%;
+			width: 136px;
+			height: 115px;
+			background-color: blue;
+		}
+		#invader{
+			position: absolute;
+			left: 40%;
+			top: 10%;
+			width: 204px;
+			height: 172px;
+			background-color: red;
+		}
+		#laser{
+			width: 10px;
+			height: 70px;
+			position: absolute;
+			left: 0;
+			top: 0;
+			display: none;
+			background-color: #FCEC1A;
+		}
+	</style>
+</head>
+<body>
+	<div id="text"></div>
+	<img id="spaceShip" src="./images/1.png" alt="spaceShip">
+	<img id="invader" src="./images/2.png" alt="invader">
+	<div id="laser"></div>
+
+	<script type="text/javascript">
+		$(function(){
+			var winWidth = $(document).width();
+			var duration = 1000;
+
+			$(document).keydown(function(e){
+				var keyCode = e.keyCode || e.which;
+				var keyMap = {left: 37, up: 38, right: 39, down: 40};
+
+				switch(keyCode){
+					//向左移动
+					case keyMap.left:
+						$("#spaceShip").animate({
+							left: '-=50'
+						}, 200);
+						break;
+					//向上发射镭射
+					case keyMap.up:
+						//获取飞船位置
+						var spaceLeft = $("#spaceShip").offset().left;
+						var spaceTop = $("#spaceShip").offset().top;
+						//确定镭射位置
+						$("#laser").offset({left: spaceLeft+68, top: spaceTop-70});
+						$("#laser").css("display", "block")
+							.animate({top: 70}, 200 , function(){
+								var invaderLeft = $("#invader").offset().left;
+								var laserLeft = $("#laser").offset().left;
+
+								if(laserLeft >= invaderLeft && laserLeft <= invaderLeft + 204){
+									$("#invader").hide();
+									$("#text").html("<h1>Direct Hit!</h1>");
+								}
+
+								$("#laser").offset({left:0 , top: 0});
+								$("#laser").css("display", "none");
+							});
+						break;
+					//向右移动
+					case keyMap.right:
+						$("#spaceShip").animate({
+							left: '+=50'
+						}, 200);
+						break;
+				}
+			});
+
+		});
+	</script>
+</body>
+</html>
